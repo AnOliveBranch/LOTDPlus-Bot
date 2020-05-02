@@ -10,6 +10,10 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+STAFF_CHANNEL = os.getenv('STAFF_CHANNEL')
+MOD_ROLE = os.getenv('MOD_ROLE')
+ADMIN_ROLE = os.getenv('ADMIN_ROLE')
+OWNER_ID = os.getenv('OWNER_ID')
 
 client = discord.Client()
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
@@ -26,43 +30,43 @@ async def on_message(message):
     if message.content.startswith("!loadorder"):
         # Help menu
         if message.content.startswith("!loadorder help"):
-            if str(message.channel.id) == os.getenv('STAFF_CHANNEL'):
+            if str(message.channel.id) == STAFF_CHANNEL:
                 await message.channel.send(staffhelp())
             else:
                 await message.channel.send(help())
             return
         # Check if message sent in staff channel
-        if str(message.channel.id) == os.getenv('STAFF_CHANNEL'):
+        if str(message.channel.id) == STAFF_CHANNEL:
             # Staff command to pause
             if message.content.startswith("!loadorder pause"):
                 for role in message.author.roles:
-                    if str(role.id) == os.getenv('ADMIN_ROLE') or str(role.id) == os.getenv('MOD_ROLE'):
+                    if str(role.id) == ADMIN_ROLE or str(role.id) == MOD_ROLE:
                         pause()
                         await message.channel.send("Load order validation paused")                      
-                if str(message.author.id) == os.getenv('OWNER_ID'):
+                if str(message.author.id) == OWNER_ID:
                     pause()
                     await message.channel.send("Load order validation paused")
                 return
             # Staff command to resume
             if message.content.startswith("!loadorder resume"):
                 for role in message.author.roles:
-                    if str(role.id) == os.getenv('ADMIN_ROLE') or str(role.id) == os.getenv('MOD_ROLE'):
+                    if str(role.id) == ADMIN_ROLE or str(role.id) == MOD_ROLE:
                         resume()
                         await message.channel.send("Load order validation resumed")
-                if str(message.author.id) == os.getenv('OWNER_ID'):
+                if str(message.author.id) == OWNER_ID:
                     resume()
                     await message.channel.send("Load order validation resumed")
                 return
             # Staff command to update the master list
             if message.content.startswith("!loadorder update"):
                 for role in message.author.roles:
-                    if str(role.id) == os.getenv('ADMIN_ROLE') or str(role.id) == os.getenv('MOD_ROLE'):
+                    if str(role.id) == ADMIN_ROLE or str(role.id) == MOD_ROLE:
                         if len(message.attachments) == 1 and message.attachments[0].filename == "loadorder.txt":
                             update(message.attachments[0].url)
                             await message.channel.send("Load order successfully updated")
                         else:
                             await message.channel.send("Must have exactly 1 attachment named loadorder.txt")
-                if str(message.author.id) == os.getenv('OWNER_ID'):
+                if str(message.author.id) == OWNER_ID:
                     if len(message.attachments) == 1 and message.attachments[0].filename == "loadorder.txt":
                         update(message.attachments[0].url)
                         await message.channel.send("Load order successfully updated")
@@ -72,9 +76,9 @@ async def on_message(message):
             # Staff command to get information about the bot & load order
             if message.content.startswith("!loadorder status"):
                 for role in message.author.roles:
-                    if str(role.id) == os.getenv('ADMIN_ROLE') or str(role.id) == os.getenv('MOD_ROLE'):
+                    if str(role.id) == ADMIN_ROLE or str(role.id) == MOD_ROLE:
                         await message.channel.send(status())
-                if str(message.author.id) == os.getenv('OWNER_ID'):
+                if str(message.author.id) == OWNER_ID:
                    await message.channel.send(status())
                 return
         # Check if bot is paused
